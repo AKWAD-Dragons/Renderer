@@ -5,3 +5,7 @@
 ## 0.0.2
 
 * fixed flutter format and corrected readme
+
+## 0.0.3
+
+* fixed readme

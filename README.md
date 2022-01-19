@@ -2,7 +2,7 @@
 ##### What is Renderer?
 A Falcon micro-framework package to manage UI states reactively based on custom BLoC and reactive extenstions.
 
-##### Why Fluent?
+##### Why Renderer?
 Fluent came to be able to inject the refeshing UI states reactively in flutter widget tree with minimum effort.
 
 ### Installation
@@ -47,7 +47,17 @@ class HomeScreen extends StatelessWidget with RendererFire {}
 2. In your `build()` widget tree, wrap the widget that expects data from a state inside a `Renderer` widget. A `Renderer<B, S>` is a generic widget that expects both a ***BLoC*** and success ***State*** types respectively. The Renderer will NOT allow its child widget to refresh until it receives one of the 3 pre-defined (Success, Error or Loading) states.
 
 ```dart
-    Renderer<AuthBloc, LoginSuccess>(
+class HomeScreen extends StatelessWidget with RendererFire {
+  const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(onPressed: () {
+        fireEvent<AuthBloc, LoginEvent>(LoginEvent(status: 'User Logged In'));
+      }),
+      body: Center(
+        child: Renderer<AuthBloc, LoginSuccess>(
           errorWhen: (errorState) => errorState is LoginError,
           loadingWhen: (state) => state is LoginLoading,
           stateBuilder: (state) => Center(
@@ -62,7 +72,11 @@ class HomeScreen extends StatelessWidget with RendererFire {}
                 textAlign: TextAlign.center,
                 style: const TextStyle(color: Colors.red, fontSize: 60)),
           ),
-        )
+        ),
+      ),
+    );
+  }
+}
 ```
 
 3. For each renderer widget, you're required to guide the renderer when to replace the success state UI with an error or loading UI using `errorWhen`, `loadingWhen` callbacks.
