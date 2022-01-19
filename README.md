@@ -2,8 +2,8 @@
 ##### What is Renderer?
 A Falcon micro-framework package to manage UI states reactively based on custom BLoC and reactive extenstions.
 
-##### Why Fluent?
-Fluent came to be able to inject the refeshing UI states reactively in flutter widget tree with minimum effort.
+##### Why Renderer?
+Renderer came to be able to inject the refeshing UI states reactively in flutter widget tree with minimum effort.
 
 ### Installation
 
