@@ -3,7 +3,7 @@
 A Falcon micro-framework package to manage UI states reactively based on custom BLoC and reactive extenstions.
 
 ##### Why Renderer?
-Fluent came to be able to inject the refeshing UI states reactively in flutter widget tree with minimum effort.
+Renderer came to be able to inject the refeshing UI states reactively in flutter widget tree with minimum effort.
 
 ### Installation
 
@@ -29,6 +29,24 @@ abstract class AuthState extends RendererState {}
 class AuthBloc extends RendererBLoC<AuthEvent, AuthState> {
   @override
   void dispatch(AuthEvent event) async {}
+
+  @override
+  void dispose() {
+    closeSubject();
+  }
+}
+```
+
+4- Finally, to notify Renderers about a new state, all you need to do is calling the already inherited function `notifyRenderers()` and pass your great state object to it as an argument.
+
+```dart
+class AuthBloc extends RendererBLoC<AuthEvent, AuthState> {
+  @override
+  void dispatch(AuthEvent event) async {
+    if (event is LoginEvent) {
+      notifyRenderers(LoginSuccess('User Logged In'));
+    }
+  }
 
   @override
   void dispose() {
