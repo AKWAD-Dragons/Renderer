@@ -17,3 +17,7 @@
 ## 0.0.5
 
 * fixed subject consumer type
+
+## 0.0.6
+
+* added code documentation

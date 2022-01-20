@@ -1,6 +1,6 @@
 name: renderer
 description: A Falcon micro-framework package to manage UI states reactively based on custom BLoC and reactive extenstions
-version: 0.0.5
+version: 0.0.6
 repository: https://github.com/AKWAD-Dragons/Renderer
 
 environment:
