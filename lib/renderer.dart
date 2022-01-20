@@ -51,8 +51,7 @@ class _RendererState<B extends RendererBLoC, S extends RendererState>
   }
 
   void _subscribeToRenderer() {
-    print(widget.fromBloc.getSubject(this));
-    _stream = widget.fromBloc.getSubject(this)?.listen((state) {
+    _stream = widget.fromBloc.getSubject(widget)?.listen((state) {
       if (_suspendRefresh(state)) return;
       setState(() {
         _currentState = state;

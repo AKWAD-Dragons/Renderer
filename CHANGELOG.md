@@ -13,3 +13,7 @@
 ## 0.0.4
 
 * provideded notifyRenderers
+
+## 0.0.5
+
+* fixed subject consumer type
