@@ -14,6 +14,7 @@ class Renderer<B extends RendererBLoC, S extends RendererState>
   final Widget onLoading;
   final Widget? onError;
   final RendererErrorBuilder? errorBuilder;
+  final RendererInitializer? onInit;
 
   Renderer(
       {Key? key,
@@ -22,7 +23,8 @@ class Renderer<B extends RendererBLoC, S extends RendererState>
       required this.loadingWhen,
       required this.onLoading,
       this.onError,
-      this.errorBuilder})
+      this.errorBuilder,
+      this.onInit})
       : assert(() {
           if (onError == null && errorBuilder == null) {
             throw 'Either [onError] or [errorBuilder] MUST be provided to renderer';
@@ -46,8 +48,18 @@ class _RendererState<B extends RendererBLoC, S extends RendererState>
 
   @override
   void initState() {
+    _doAfterLastFrame();
     _subscribeToRenderer();
     super.initState();
+  }
+
+  void _doAfterLastFrame() {
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      final RendererInitializer? initializer = widget.onInit;
+      if (initializer == null) return;
+
+      initializer(timeStamp);
+    });
   }
 
   void _subscribeToRenderer() {
