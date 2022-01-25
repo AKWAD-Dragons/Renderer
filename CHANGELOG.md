@@ -25,3 +25,7 @@
 ## 0.0.7
 
 * added onInit callback to execute code after renderer last frame
+
+## 0.0.8
+
+* fixed onInit callback signature
