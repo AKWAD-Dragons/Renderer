@@ -108,4 +108,3 @@ class HomeScreen extends StatelessWidget with RendererFire {
 ```dart
 fireEvent<AuthBloc, LoginEvent>(LoginEvent(status: 'User Logged In'));
 ```
-
