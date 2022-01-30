@@ -76,9 +76,9 @@ class HomeScreen extends StatelessWidget with RendererFire {
       }),
       body: Center(
         child: Renderer<AuthBloc, LoginSuccess>(
-          onInit: (timeStamp) => print(Optional: Do Something on widget starts)
+          onInit: (timeStamp, context) => showDialog(context: context, builder: (...))
           errorWhen: (errorState) => errorState is LoginError,
-          loadingWhen: (state) => state is LoginLoading,
+          loadingWhen: (loadingState) => loadingState is LoginLoading,
           stateBuilder: (state) => Center(
             child: Text(
               state.message,
@@ -86,16 +86,16 @@ class HomeScreen extends StatelessWidget with RendererFire {
             ),
           ),
           onLoading: const CircularProgressIndicator(),
-          errorBuilder: (String title, String message, int code) => Center(
+          errorBuilder: (RendererError error) => Center(
             child: Column(
               children: [
                 Text(
-                  title,
+                  error.title,
                   textAlign: TextAlign.center,
                   style: const TextStyle(color: Colors.red, fontSize: 60),
                 ),
                 Text(
-                  '$message, CODE: $code',
+                  '${error.message}, CODE: ${error.code}',
                   textAlign: TextAlign.center,
                   style: const TextStyle(color: Colors.red, fontSize: 60),
                 ),
@@ -108,20 +108,21 @@ class HomeScreen extends StatelessWidget with RendererFire {
   }
 }
 ```
-3. A Renderer now has `onInit` field to help you override the usage of `initState` when you need to call/execute a function immediately on a widget starts. `onInit` guarantees to execute your code right after the last frame of a "renderer widget" has been drawn and setteled on screen. It also provides you with a timestamp that indicates when exactly the last frame has been settled.
+3. A Renderer now has `onInit` field to help you override the usage of `initState` when you need to call/execute a function immediately on a widget starts. `onInit` guarantees to execute your code right after the last frame of a "renderer widget" has been drawn and setteled on screen. `onInit` provides a timestamp that indicates when exactly the Renderer has been mounted and a `BuildContext` instance to be used to show Dialogs, Snackbars,...etc.
 
 4. For each renderer widget, you're required to guide the renderer when to replace the success state UI with an error or loading UI using `errorWhen`, `loadingWhen` callbacks.
 
 5. For a loading state, you're required to provide the `onLoading` widget to render when the renderer receives the loading state using the defined earlier `loadingWhen`.
 
-6. For an error state, you're required to provide either the `onError` widget to statically render an error widget or `errorBuilder` to get the exact error message and error code when the renderer receives the error state using the defined earlier `errorWhen`.
-**PLEASE NOTE:** If you intend to use `errorBuilder` then you MUST provide an error state object that contains `errorTitle`, `errorMessage` and `errorCode` fields using these exact field names.
+6. For an error state, you're required to provide one of the following:
+- `error`: A widget to statically render an error widget.
+-  `errorBuilder`: A callback to get the exact error data including title, message and code when the renderer receives the error state.
+-  `onError`: A  callback to get both an exact error data (As `errorBuilder`) in addition to the current `buildContext` instance. This callback is useful in case you need to show Dialog, Snackbar, ...etc that require a `buildContext` to build
+**PLEASE NOTE:** If you intend to use `errorBuilder` or `onError` callbacks then you MUST provide an error state object that contains a `RendererError` field to `errorWhen`.
 
 ```dart
 class LoginError extends AuthState {
-  final String errorTitle;
-  final String errorMessage;
-  final int errorCode;
+  final RendererError rendererError; //Must be exatcly named
 }
 ```
 
