@@ -11,8 +11,8 @@ class Renderer<B extends RendererBLoC, S extends RendererState>
   final RendererBuilder<S> stateBuilder;
   final RendererError errorWhen;
   final RendererLoading loadingWhen;
-  final Widget onLoading;
-  final Widget? onError;
+  final Widget loading;
+  final Widget? error;
   final RendererErrorBuilder? errorBuilder;
   final RendererInitializer? onInit;
 
@@ -21,16 +21,16 @@ class Renderer<B extends RendererBLoC, S extends RendererState>
       required this.stateBuilder,
       required this.errorWhen,
       required this.loadingWhen,
-      required this.onLoading,
-      this.onError,
+      required this.loading,
+      this.error,
       this.errorBuilder,
       this.onInit})
       : assert(() {
-          if (onError == null && errorBuilder == null) {
+          if (error == null && errorBuilder == null) {
             throw 'Either [onError] or [errorBuilder] MUST be provided to renderer';
           }
 
-          if (onError != null && errorBuilder != null) {
+          if (error != null && errorBuilder != null) {
             throw 'Only [onError] or [errorBuilder] MUST be provided to renderer';
           }
           return true;
@@ -58,7 +58,7 @@ class _RendererState<B extends RendererBLoC, S extends RendererState>
       final RendererInitializer? initializer = widget.onInit;
       if (initializer == null) return;
 
-      initializer(timeStamp);
+      initializer(timeStamp, context);
     });
   }
 
@@ -84,7 +84,7 @@ class _RendererState<B extends RendererBLoC, S extends RendererState>
   Widget? _loadingState() {
     final bool loadingState = widget.loadingWhen(_currentState);
     if (!loadingState) return null;
-    return LoadingState().render(primaryWidget: widget.onLoading);
+    return LoadingState().render(primaryWidget: widget.loading);
   }
 
   Widget? _errorState() {
@@ -92,7 +92,7 @@ class _RendererState<B extends RendererBLoC, S extends RendererState>
     if (!errorState) return null;
 
     return ErrorState().render(
-        primaryWidget: widget.onError,
+        primaryWidget: widget.error,
         alternativeWidget: widget.errorBuilder!(_currentState.errorTitle,
             _currentState.errorMessage, _currentState.errorCode));
   }

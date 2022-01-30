@@ -6,4 +6,5 @@ typedef RendererLoading<S extends RendererState> = bool Function(S state);
 typedef RendererError<E extends RendererState> = bool Function(E state);
 typedef RendererErrorBuilder = Widget Function(
     String title, String message, int code);
-typedef RendererInitializer = void Function(Duration rendererTimestamp);
+typedef RendererInitializer = void Function(
+    Duration rendererTimestamp, BuildContext context);
