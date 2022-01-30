@@ -41,3 +41,7 @@
 ## 0.0.11
 
 * provided `onError` callback with BuildContext
+
+## 0.0.12
+
+* fixed documentation
