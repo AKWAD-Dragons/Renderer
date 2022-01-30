@@ -33,3 +33,7 @@
 ## 0.0.9
 
 * added error title to error builder & fixed documentation
+
+## 0.0.10
+
+* fixed documentation

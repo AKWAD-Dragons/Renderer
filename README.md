@@ -86,11 +86,22 @@ class HomeScreen extends StatelessWidget with RendererFire {
             ),
           ),
           onLoading: const CircularProgressIndicator(),
-          errorBuilder: (String message, int code) => Center(
-            child: Text('$message, CODE: $code',
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.red, fontSize: 60)),
-          ),
+          errorBuilder: (String title, String message, int code) => Center(
+            child: Column(
+              children: [
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.red, fontSize: 60),
+                ),
+                Text(
+                  '$message, CODE: $code',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.red, fontSize: 60),
+                ),
+              ],
+            ),
+          )
         ),
       ),
     );
