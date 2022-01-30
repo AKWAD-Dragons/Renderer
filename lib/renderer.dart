@@ -9,29 +9,31 @@ class Renderer<B extends RendererBLoC, S extends RendererState>
     extends StatefulWidget {
   final RendererBLoC fromBloc = GetIt.instance<B>();
   final RendererBuilder<S> stateBuilder;
-  final RendererError errorWhen;
-  final RendererLoading loadingWhen;
+  final RendererErrorCallback errorWhen;
+  final RendererLoadingCallback loadingWhen;
   final Widget loading;
   final Widget? error;
   final RendererErrorBuilder? errorBuilder;
+  final RendererErrorNotifier? onError;
   final RendererInitializer? onInit;
 
-  Renderer(
-      {Key? key,
-      required this.stateBuilder,
-      required this.errorWhen,
-      required this.loadingWhen,
-      required this.loading,
-      this.error,
-      this.errorBuilder,
-      this.onInit})
-      : assert(() {
-          if (error == null && errorBuilder == null) {
-            throw 'Either [onError] or [errorBuilder] MUST be provided to renderer';
+  Renderer({
+    Key? key,
+    this.onInit,
+    required this.stateBuilder,
+    required this.errorWhen,
+    required this.loadingWhen,
+    required this.loading,
+    this.error,
+    this.errorBuilder,
+    this.onError,
+  })  : assert(() {
+          if (error == null && errorBuilder == null && onError == null) {
+            throw 'Either [onError], [error] or [errorBuilder] callbacks MUST be provided to renderer';
           }
 
-          if (error != null && errorBuilder != null) {
-            throw 'Only [onError] or [errorBuilder] MUST be provided to renderer';
+          if (error != null && errorBuilder != null && onError != null) {
+            throw 'Only one callback of [onError], [error] or [errorBuilder] MUST be provided to renderer';
           }
           return true;
         }()),
@@ -64,7 +66,7 @@ class _RendererState<B extends RendererBLoC, S extends RendererState>
 
   void _subscribeToRenderer() {
     _stream = widget.fromBloc.getSubject(widget)?.listen((state) {
-      if (_suspendRefresh(state)) return;
+      if (_protectState(state)) return;
       setState(() {
         _currentState = state;
       });
@@ -93,8 +95,7 @@ class _RendererState<B extends RendererBLoC, S extends RendererState>
 
     return ErrorState().render(
         primaryWidget: widget.error,
-        alternativeWidget: widget.errorBuilder!(_currentState.errorTitle,
-            _currentState.errorMessage, _currentState.errorCode));
+        alternativeWidget: widget.errorBuilder!(_currentState.rendererError));
   }
 
   Widget? _successState() {
@@ -105,10 +106,31 @@ class _RendererState<B extends RendererBLoC, S extends RendererState>
         .render(primaryWidget: widget.stateBuilder(_currentState));
   }
 
-  bool _suspendRefresh(dynamic state) {
+  bool _avoidState(dynamic state) {
     return !(state is S ||
         widget.errorWhen(state) ||
         widget.loadingWhen(state));
+  }
+
+  bool _nonRenderableErrorState(dynamic state) {
+    final bool errorState = widget.errorWhen(state);
+    if (!errorState) return false;
+
+    if (widget.error == null && widget.errorBuilder == null) return true;
+    return false;
+  }
+
+  bool _protectState(dynamic state) {
+    if (_avoidState(state)) {
+      return false;
+    }
+
+    if (_nonRenderableErrorState(state)) {
+      widget.onError!(state.renderError, context);
+      return false;
+    }
+
+    return true;
   }
 
   @override
