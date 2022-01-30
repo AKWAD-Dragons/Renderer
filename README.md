@@ -85,7 +85,7 @@ class HomeScreen extends StatelessWidget with RendererFire {
               style: const TextStyle(color: Colors.green, fontSize: 40),
             ),
           ),
-          onLoading: const CircularProgressIndicator(),
+          loading: const CircularProgressIndicator(),
           errorBuilder: (RendererError error) => Center(
             child: Column(
               children: [

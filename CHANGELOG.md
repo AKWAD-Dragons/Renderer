@@ -45,3 +45,7 @@
 ## 0.0.12
 
 * fixed documentation
+
+## 0.0.13
+
+* fixed documentation
