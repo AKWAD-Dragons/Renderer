@@ -29,3 +29,7 @@
 ## 0.0.8
 
 * fixed onInit callback signature
+
+## 0.0.9
+
+* added error title to error builder & fixed documentation

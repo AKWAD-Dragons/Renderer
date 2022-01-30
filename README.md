@@ -15,7 +15,7 @@ dependencies:
 ### Setup and Usage
 
 ---
-##### Preparing BLoC
+#### Preparing BLoC
 1. Create your BLoC event abstract class and let it inherit from `RendererEvent`
 ```dart
 abstract class AuthEvent extends RendererEvent {}
@@ -54,7 +54,7 @@ class AuthBloc extends RendererBLoC<AuthEvent, AuthState> {
   }
 }
 ```
-##### Preparing Widgets
+#### Preparing Widgets
 Renderer carries the burden of using always a Stateful Widget to repaint your UI states away of your shoulders. It helps get rid of the extensive boilerplate code used to be added inside `initState()` as will as cancelling any state stream subscriptions inside `dispose()`.
 
 1. Inside your Stateless Widget let your class implements `RendererFire` mixin.
@@ -72,10 +72,11 @@ class HomeScreen extends StatelessWidget with RendererFire {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(onPressed: () {
-        fireEvent<AuthBloc, LoginEvent>(LoginEvent(status: 'User Logged In'));
+        fireEvent<AuthBloc, AuthEvent>(LoginEvent(status: 'User Logged In'));
       }),
       body: Center(
         child: Renderer<AuthBloc, LoginSuccess>(
+          onInit: (timeStamp) => print(Optional: Do Something on widget starts)
           errorWhen: (errorState) => errorState is LoginError,
           loadingWhen: (state) => state is LoginLoading,
           stateBuilder: (state) => Center(
@@ -96,15 +97,25 @@ class HomeScreen extends StatelessWidget with RendererFire {
   }
 }
 ```
+3. A Renderer now has `onInit` field to help you override the usage of `initState` when you need to call/execute a function immediately on a widget starts. `onInit` guarantees to execute your code right after the last frame of a "renderer widget" has been drawn and setteled on screen. It also provides you with a timestamp that indicates when exactly the last frame has been settled.
 
-3. For each renderer widget, you're required to guide the renderer when to replace the success state UI with an error or loading UI using `errorWhen`, `loadingWhen` callbacks.
+4. For each renderer widget, you're required to guide the renderer when to replace the success state UI with an error or loading UI using `errorWhen`, `loadingWhen` callbacks.
 
-4. For a loading state, you're required to provide the `onLoading` widget to render when the renderer receives the loading state using the defined earlier `loadingWhen`.
+5. For a loading state, you're required to provide the `onLoading` widget to render when the renderer receives the loading state using the defined earlier `loadingWhen`.
 
-5. For an error state, you're required to provide either the `onError` widget to statically render an error widget or `errorBuilder` to get the exact error message and error code when the renderer receives the error state using the defined earlier `errorWhen`.
-
-6. Finally, Firing the event is no longer needs an instance of a BLoC as usual. You just need to call `fireEvent()` function that is already inherited from `RendererFire` mixin. `fireEvent<B, V>` is a generic function that expects both ***BLoC*** and ***Event*** types respectively.
+6. For an error state, you're required to provide either the `onError` widget to statically render an error widget or `errorBuilder` to get the exact error message and error code when the renderer receives the error state using the defined earlier `errorWhen`.
+**PLEASE NOTE:** If you intend to use `errorBuilder` then you MUST provide an error state object that contains `errorTitle`, `errorMessage` and `errorCode` fields using these exact field names.
 
 ```dart
-fireEvent<AuthBloc, LoginEvent>(LoginEvent(status: 'User Logged In'));
+class LoginError extends AuthState {
+  final String errorTitle;
+  final String errorMessage;
+  final int errorCode;
+}
+```
+
+7. Finally, Firing the event is no longer needs an instance of a BLoC as usual. You just need to call `fireEvent()` function that is already inherited from `RendererFire` mixin. `fireEvent<B, V>` is a generic function that expects both ***BLoC*** and ***Event*** types respectively.
+
+```dart
+fireEvent<AuthBloc, AuthEvent>(LoginEvent(status: 'User Logged In'));
 ```

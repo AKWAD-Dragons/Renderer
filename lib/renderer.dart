@@ -93,7 +93,7 @@ class _RendererState<B extends RendererBLoC, S extends RendererState>
 
     return ErrorState().render(
         primaryWidget: widget.onError,
-        alternativeWidget: widget.errorBuilder!(
+        alternativeWidget: widget.errorBuilder!(_currentState.errorTitle,
             _currentState.errorMessage, _currentState.errorCode));
   }
 
