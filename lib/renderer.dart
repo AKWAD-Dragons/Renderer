@@ -8,14 +8,14 @@ import 'renderer_types.dart';
 class Renderer<B extends RendererBLoC, S extends RendererState>
     extends StatefulWidget {
   final RendererBLoC fromBloc = GetIt.instance<B>();
+  final RendererInitializer? onInit;
   final RendererBuilder<S> stateBuilder;
   final RendererErrorCallback errorWhen;
-  final RendererLoadingCallback loadingWhen;
-  final Widget loading;
   final Widget? error;
   final RendererErrorBuilder? errorBuilder;
   final RendererErrorNotifier? onError;
-  final RendererInitializer? onInit;
+  final RendererLoadingCallback? loadingWhen;
+  final Widget? loading;
 
   Renderer({
     Key? key,
@@ -29,11 +29,23 @@ class Renderer<B extends RendererBLoC, S extends RendererState>
     this.onError,
   })  : assert(() {
           if (error == null && errorBuilder == null && onError == null) {
-            throw 'Either [onError], [error] or [errorBuilder] callbacks MUST be provided to renderer';
+            throw 'Either [onError], [error] or [errorBuilder] callbacks'
+                ' MUST be provided to renderer';
           }
 
           if (error != null && errorBuilder != null && onError != null) {
-            throw 'Only one callback of [onError], [error] or [errorBuilder] MUST be provided to renderer';
+            throw 'Only one callback of [onError], [error] or [errorBuilder]'
+                ' MUST be provided to renderer';
+          }
+
+          if (loadingWhen == null && loading != null) {
+            throw '[loadingWhen] cannot equal null as Renderer does NOT know '
+                'when to render the provided [loading] widget. ';
+          }
+
+          if (loadingWhen != null && loading == null) {
+            throw '[loading] cannot equal null as Renderer does NOT know what '
+                'widget to render when it receives a loading state';
           }
           return true;
         }()),
@@ -84,7 +96,9 @@ class _RendererState<B extends RendererBLoC, S extends RendererState>
   }
 
   Widget? _loadingState() {
-    final bool loadingState = widget.loadingWhen(_currentState);
+    if (widget.loadingWhen == null) return null;
+    final bool loadingState = widget.loadingWhen!(_currentState);
+
     if (!loadingState) return null;
     return LoadingState().render(primaryWidget: widget.loading);
   }
@@ -107,9 +121,14 @@ class _RendererState<B extends RendererBLoC, S extends RendererState>
   }
 
   bool _avoidState(dynamic state) {
-    return !(state is S ||
-        widget.errorWhen(state) ||
-        widget.loadingWhen(state));
+    final RendererLoadingCallback? loadingCallback = widget.loadingWhen;
+    bool loadingState = false;
+
+    if (loadingCallback != null) {
+      loadingState = loadingCallback(state);
+    }
+
+    return !(state is S || widget.errorWhen(state) || loadingState);
   }
 
   bool _nonRenderableErrorState(dynamic state) {
