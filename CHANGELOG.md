@@ -53,3 +53,7 @@
 ## 0.0.14
 
 * added render error default values
+
+## 0.0.15
+
+* fixed bug in protect state

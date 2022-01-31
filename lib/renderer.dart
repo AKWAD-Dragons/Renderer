@@ -141,15 +141,15 @@ class _RendererState<B extends RendererBLoC, S extends RendererState>
 
   bool _protectState(dynamic state) {
     if (_avoidState(state)) {
-      return false;
+      return true;
     }
 
     if (_nonRenderableErrorState(state)) {
       widget.onError!(state.renderError, context);
-      return false;
+      return true;
     }
 
-    return true;
+    return false;
   }
 
   @override
