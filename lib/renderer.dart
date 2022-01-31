@@ -145,7 +145,7 @@ class _RendererState<B extends RendererBLoC, S extends RendererState>
     }
 
     if (_nonRenderableErrorState(state)) {
-      widget.onError!(state.renderError, context);
+      widget.onError!(state.rendererError, context);
       return true;
     }
 

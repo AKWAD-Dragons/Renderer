@@ -61,3 +61,7 @@
 ## 0.0.16
 
 * provided custom error object into renderer error
+
+## 0.0.17
+
+* fixed spelling issue in onError
