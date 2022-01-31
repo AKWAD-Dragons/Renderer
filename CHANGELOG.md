@@ -57,3 +57,7 @@
 ## 0.0.15
 
 * fixed bug in protect state
+
+## 0.0.16
+
+* provided custom error object into renderer error
