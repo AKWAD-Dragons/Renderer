@@ -49,3 +49,7 @@
 ## 0.0.13
 
 * fixed documentation
+
+## 0.0.14
+
+* added render error default values

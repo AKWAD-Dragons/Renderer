@@ -116,9 +116,9 @@ class HomeScreen extends StatelessWidget with RendererFire {
 
 6. For an error state, you're required to provide one of the following:
 - `error`: A widget to statically render an error widget.
--  `errorBuilder`: A callback to get the exact error data including title, message and code when the renderer receives the error state.
--  `onError`: A  callback to get both an exact error data (As `errorBuilder`) in addition to the current `buildContext` instance. This callback is useful in case you need to show Dialog, Snackbar, ...etc that require a `buildContext` to build
-**PLEASE NOTE:** If you intend to use `errorBuilder` or `onError` callbacks then you MUST provide an error state object that contains a `RendererError` field to `errorWhen`.
+-  `errorBuilder`: A callback to get a `RendererError` object (containts error data: title, message and code) when the renderer receives its error state. You may use the error data to show your custom error widget.
+-  `onError`: A  callback to get both `RendererError` object and the current `buildContext` object. This callback is useful in case you need to show Dialog, Snackbar, ...etc that require a `buildContext` to build.<br><br>
+**PLEASE NOTE:** If you intend to use `errorBuilder` or `onError` callbacks then you MUST provide an error state object that contains a `RendererError` field to `errorWhen`.<br>
 
 ```dart
 class LoginError extends AuthState {
