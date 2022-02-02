@@ -9,6 +9,7 @@ class Renderer<B extends RendererBLoC, S extends RendererState>
     extends StatefulWidget {
   final RendererBLoC fromBloc = GetIt.instance<B>();
   final RendererInitializer? onInit;
+  final Widget? initial;
   final RendererBuilder<S> stateBuilder;
   final RendererErrorCallback errorWhen;
   final Widget? error;
@@ -20,6 +21,7 @@ class Renderer<B extends RendererBLoC, S extends RendererState>
   Renderer({
     Key? key,
     this.onInit,
+    this.initial,
     required this.stateBuilder,
     required this.errorWhen,
     required this.loadingWhen,
@@ -92,7 +94,7 @@ class _RendererState<B extends RendererBLoC, S extends RendererState>
   }
 
   Widget _initState() {
-    return Container();
+    return widget.initial ?? Container();
   }
 
   Widget? _loadingState() {

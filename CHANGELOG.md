@@ -65,3 +65,7 @@
 ## 0.0.17
 
 * fixed spelling issue in onError
+
+## 0.0.18
+
+* added custom initial widget

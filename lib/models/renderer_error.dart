@@ -6,7 +6,7 @@ class RendererError {
 
   const RendererError(
       {this.title = 'Undefined Error',
-        this.message = "Empty Error Message",
-        this.code = 1,
-        this.customError});
+      this.message = "Empty Error Message",
+      this.code = 1,
+      this.customError});
 }
