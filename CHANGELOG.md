@@ -69,3 +69,7 @@
 ## 0.0.18
 
 * added custom initial widget
+
+## 0.0.19
+
+* updated license
