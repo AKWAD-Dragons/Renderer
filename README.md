@@ -77,6 +77,7 @@ class HomeScreen extends StatelessWidget with RendererFire {
       body: Center(
         child: Renderer<AuthBloc, LoginSuccess>(
           onInit: (timeStamp, context) => showDialog(context: context, builder: (...))
+          initial: CustomInitialWidget(),
           errorWhen: (errorState) => errorState is LoginError,
           loadingWhen: (loadingState) => loadingState is LoginLoading,
           stateBuilder: (state) => Center(
